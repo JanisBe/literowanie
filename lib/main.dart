@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:requests/requests.dart';
 
 void main() {
   runApp(MyApp());
@@ -31,14 +31,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  Future<String> hyphenated;
+  Future<List<String>> hyphenated;
+
   @override
   void initState() {
     super.initState();
     hyphenated = getIt();
   }
+
   @override
   Widget build(BuildContext context) {
+    int _radioValue = 0;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -55,31 +58,37 @@ class _MyHomePageState extends State<MyHomePage> {
                   "Wybierz rodzaj liter",
                   style: TextStyle(fontSize: 35),
                 ),
-                ButtonBar(
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    FlatButton.icon(
-                      padding: EdgeInsets.all(0),
-                      icon: Icon(
-                        Icons.title,
-                        size: 20,
-                      ),
-                      onPressed: (){},
-                      label: Text("Małe litery"),
+                    new Radio(
+                      value: 0,
+                      groupValue: _radioValue,
+                      onChanged: _handleRadioValueChange,
                     ),
-                    FlatButton.icon(
-                      padding: EdgeInsets.all(0),
-                      icon: Icon(
-                        Icons.title,
-                        size: 30,
-                      ),
-                      onPressed: () {},
-                      label: Text("Duże litery"),
+                    new Text(
+                      'Małe litery',
+                      style: new TextStyle(fontSize: 16.0),
                     ),
-                    FlatButton.icon(
-                      padding: EdgeInsets.all(0),
-                      icon: Icon(Icons.text_fields),
-                      onPressed: () {},
-                      label: Text("Duże i małe litery"),
+                    new Radio(
+                      value: 1,
+                      groupValue: _radioValue,
+                      onChanged: _handleRadioValueChange,
+                    ),
+                    new Text(
+                      'Herbivore',
+                      style: new TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    new Radio(
+                      value: 2,
+                      groupValue: _radioValue,
+                      onChanged: _handleRadioValueChange,
+                    ),
+                    new Text(
+                      'Omnivore',
+                      style: new TextStyle(fontSize: 16.0),
                     ),
                   ],
                 ),
@@ -89,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   future: hyphenated,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Text(snapshot.data);
+                      return Text(snapshot.data.toString());
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
@@ -123,7 +132,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
+  void _handleRadioValueChange(int value) {
+  }
   static const List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Home',
@@ -148,14 +158,18 @@ class _MyHomePageState extends State<MyHomePage> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
-  Future<String> getIt() async {
-    final response =
-//    await http.get('https://jsonplaceholder.typicode.com/albums/1');
-        await http.get(
-            'https://www.ushuaia.pl/hyphen/');
-
-    if (response.statusCode == 200) {
-      return response.body;
+  Future<List<String>> getIt() async {
+    String url = 'https://www.ushuaia.pl/hyphen/';
+    String hostname = Requests.getHostname(url);
+    var r = await Requests.get(url);
+    r.raiseForStatus();
+    Future<Map<String, String>> cookies = Requests.getStoredCookies(hostname);
+    r = await Requests.get(
+        'https://www.ushuaia.pl/hyphen/hyphenate.php?word=testowe&lang=pl_PL',
+        verify: false);
+    r.raiseForStatus();
+    if (r.statusCode == 200) {
+      return r.content().split(new RegExp('<span class="hyphen">•</span>'));
     } else {
       throw Exception('Failed to load album');
     }
