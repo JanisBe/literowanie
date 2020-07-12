@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:literowanie/Litery.dart';
 import 'package:requests/requests.dart';
 
 void main() {
@@ -32,16 +33,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   Future<List<String>> hyphenated;
+  Litery _radioValue = Litery.OBIE;
+  TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
     hyphenated = getIt();
+    _controller = TextEditingController();
+  }
+
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    int _radioValue = 0;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -62,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     new Radio(
-                      value: 0,
+                      value: Litery.MALE,
                       groupValue: _radioValue,
                       onChanged: _handleRadioValueChange,
                     ),
@@ -71,29 +80,60 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: new TextStyle(fontSize: 16.0),
                     ),
                     new Radio(
-                      value: 1,
+                      value: Litery.DUZE,
                       groupValue: _radioValue,
                       onChanged: _handleRadioValueChange,
                     ),
                     new Text(
-                      'Herbivore',
+                      'Duże litery',
                       style: new TextStyle(
                         fontSize: 16.0,
                       ),
                     ),
                     new Radio(
-                      value: 2,
+                      value: Litery.OBIE,
                       groupValue: _radioValue,
                       onChanged: _handleRadioValueChange,
                     ),
                     new Text(
-                      'Omnivore',
+                      'Małe i \n duże',
                       style: new TextStyle(fontSize: 16.0),
                     ),
                   ],
                 ),
-                SizedBox(width: 300, child: TextField()),
-                Text("Wpisz słowo do literowania"),
+                SizedBox(
+                    width: 300,
+                    child: TextField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Wpisz słowo do literowania',
+                      ),
+                    )),
+                Row(
+                  children: <Widget>[
+                    RaisedButton(
+                      onPressed: () {
+                        return showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: Text(_controller.text),
+                            );
+                          },
+                        );
+                      },
+                      child: Text("Sylabizuj"),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    RaisedButton(
+                      onPressed: () {},
+                      child: Text("Literuj"),
+                    ),
+                  ],
+                ),
                 FutureBuilder(
                   future: hyphenated,
                   builder: (context, snapshot) {
@@ -132,22 +172,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-  void _handleRadioValueChange(int value) {
+
+  void _handleRadioValueChange(Object value) {
+    setState(() {
+      _radioValue = value;
+    });
   }
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -165,13 +195,13 @@ class _MyHomePageState extends State<MyHomePage> {
     r.raiseForStatus();
     Future<Map<String, String>> cookies = Requests.getStoredCookies(hostname);
     r = await Requests.get(
-        'https://www.ushuaia.pl/hyphen/hyphenate.php?word=testowe&lang=pl_PL',
+        'https://www.ushuaia.pl/hyphen/hyphenate.php?word=test&lang=pl_PL',
         verify: false);
     r.raiseForStatus();
     if (r.statusCode == 200) {
       return r.content().split(new RegExp('<span class="hyphen">•</span>'));
     } else {
-      throw Exception('Failed to load album');
+      throw Exception('Failed to load page');
     }
   }
 }
