@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    hyphenated = getIt();
+    hyphenated = createFuture();
     _controller = TextEditingController();
   }
 
@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onChanged: _handleRadioValueChange,
                     ),
                     new Text(
-                      'Małe litery',
+                      'małe\nlitery',
                       style: new TextStyle(fontSize: 16.0),
                     ),
                     new Radio(
@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onChanged: _handleRadioValueChange,
                     ),
                     new Text(
-                      'Duże litery',
+                      'DUŻE\nlitery',
                       style: new TextStyle(
                         fontSize: 16.0,
                       ),
@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onChanged: _handleRadioValueChange,
                     ),
                     new Text(
-                      'Małe i \n duże',
+                      'małe i\nDUŻE',
                       style: new TextStyle(fontSize: 16.0),
                     ),
                   ],
@@ -204,4 +204,16 @@ class _MyHomePageState extends State<MyHomePage> {
       throw Exception('Failed to load page');
     }
   }
+
+  Future<List<String>> createFuture() {
+//  return Future.delayed(Duration(milliseconds: 10),()=> ["lis","ta"]);
+  return Future<List<String>>.value(["lis","tsa"]);
+  }
 }
+/*
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailScreen(todo: todos[index]),
+ */
