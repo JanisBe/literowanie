@@ -3,7 +3,7 @@ name: Flutter Build APK
 on:
   push:
     branches:
-      - main  # Albo inna, jak masz np. master
+      - master
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
     - name: 💻 Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.22.0'  # Podmień na wersję jaką używasz
+        flutter-version: '3.22.0'
 
     - name: 📦 Install dependencies
       run: flutter pub get
