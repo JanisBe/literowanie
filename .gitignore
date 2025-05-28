@@ -1,0 +1,70 @@
+# Flutter/Dart stuff
+.dart_tool/
+.packages
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.melosearch
+.flutter-versions
+.idea/
+.vscode/
+.sconsign.dblite
+*.iml
+
+# Obiekty binarne i tym podobne
+*.class
+*.lock
+*.log
+*.pyc
+*.swp
+*.swo
+*.DS_Store
+
+# Systemowe śmieci
+Thumbs.db
+Desktop.ini
+
+# Android Studio
+*.iws
+*.ipr
+*.iml
+.idea/
+
+# Xcode
+*.xcworkspace
+*.xcodeproj
+*.xcuserstate
+*.xcuserdatad
+*.xcscheme
+*.xccheckout
+*.moved-aside
+
+# Pliki konfiguracyjne systemu i edytorów
+*.orig
+*.bak
+*.tmp
+
+# Pliki generowane przez Fluttera
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+generated_plugin_registrant.dart
+
+# Pliki tymczasowe i cache
+*.tmp
+*.temp
+*.log
+*.bak
+
+# Pliki testowe
+coverage/
+test/**/*.log
+
+# Pliki prywatne
+secrets.yaml
+.env
