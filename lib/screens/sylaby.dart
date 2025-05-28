@@ -63,19 +63,26 @@ class _SylabyScreenState extends State<SylabyScreen> {
   String? _extractHyphenCookie(String cookies) {
     final reg = RegExp(r'hyphen=[^;]+');
     final match = reg.firstMatch(cookies);
-    return match != null ? match.group(0) : null;
+    return match?.group(0);
   }
 
   List<String> _splitHyphenated(String html) {
-    // Zamień <span class="hyphen">•</span> na znak specjalny, potem split
     final replaced = html.replaceAll(RegExp(r'<span class="hyphen">.*?</span>'), '|');
     return replaced.split('|').map((e) => e.replaceAll(RegExp(r'<[^>]+>'), '')).toList();
   }
 
-  void _showError(String msg) {
+void _showError(String msg) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(content: Text(msg)),
+      builder: (context) => AlertDialog(
+        content: SelectableText(msg),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -168,7 +175,7 @@ class _SyllableStepScreenState extends State<SyllableStepScreen> {
           child: Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: .1),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Text(

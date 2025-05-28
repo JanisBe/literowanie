@@ -80,13 +80,13 @@ class _SpellingStepScreenState extends State<SpellingStepScreen> {
       case SpellingMode.uppercase:
         letterWidget = Text(
           letter.toUpperCase(),
-          style: const TextStyle(fontSize: 80, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 90, fontWeight: FontWeight.bold),
         );
         break;
       case SpellingMode.lowercase:
         letterWidget = Text(
           letter.toLowerCase(),
-          style: const TextStyle(fontSize: 80, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 90, fontWeight: FontWeight.bold),
         );
         break;
       case SpellingMode.matchCase:
@@ -95,11 +95,11 @@ class _SpellingStepScreenState extends State<SpellingStepScreen> {
           children: [
             Text(
               letter.toUpperCase(),
-              style: const TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 90, fontWeight: FontWeight.bold),
             ),
             Text(
               letter.toLowerCase(),
-              style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 90, fontWeight: FontWeight.bold),
             ),
           ],
         );
@@ -123,9 +123,9 @@ class _SpellingStepScreenState extends State<SpellingStepScreen> {
         child: GestureDetector(
           onTap: _nextLetter,
           child: Container(
-            padding: const EdgeInsets.all(32),
+            padding: const EdgeInsets.all(52),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: .1),
               borderRadius: BorderRadius.circular(24),
             ),
             child: letterWidget,
