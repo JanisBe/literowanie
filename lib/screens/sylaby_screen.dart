@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:literki/screens/sylaby.dart';
 
 
@@ -94,10 +95,11 @@ class _SyllableStepScreenState extends State<SyllableStepScreen> {
                     for (int i = 0; i < widget.parts.length; i++) ...[
                       TextSpan(
                         text: widget.parts[i],
-                        style: TextStyle(
+                        style: GoogleFonts.marckScript(
                           color: i == _current ? Colors.blue[900] : Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 28,
+                          fontSize: 40 + (i == _current ? 10 : 0),
+                          decoration: i == _current ? TextDecoration.underline : null,
                         ),
                       ),
                       if (i < widget.parts.length - 1)
@@ -120,7 +122,7 @@ class _SyllableStepScreenState extends State<SyllableStepScreen> {
               child: Container(
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: .1),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: partWidget,

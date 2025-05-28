@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:literki/screens/spelling_step.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 class SpellingStepScreen extends StatefulWidget {
   final String word;
   final SpellingMode mode;
@@ -78,15 +78,33 @@ class _SpellingStepScreenState extends State<SpellingStepScreen> {
 
     switch (widget.mode) {
       case SpellingMode.uppercase:
-        letterWidget = Text(
-          letter.toUpperCase(),
-          style: const TextStyle(fontSize: 90, fontWeight: FontWeight.bold),
+        letterWidget = Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              letter.toUpperCase(),
+              style: TextStyle(fontSize: 90, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              letter.toLowerCase(),
+              style: GoogleFonts.msMadi(fontSize: 90, fontWeight: FontWeight.w100),
+            ),
+          ],
         );
         break;
       case SpellingMode.lowercase:
-        letterWidget = Text(
-          letter.toLowerCase(),
-          style: const TextStyle(fontSize: 90, fontWeight: FontWeight.bold),
+        letterWidget = Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              letter.toUpperCase(),
+              style: GoogleFonts.msMadi(fontSize: 90, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              letter.toLowerCase(),
+              style: TextStyle(fontSize: 90, fontWeight: FontWeight.bold),
+            ),
+          ],
         );
         break;
       case SpellingMode.matchCase:
@@ -123,10 +141,15 @@ class _SpellingStepScreenState extends State<SpellingStepScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 32.0),
+              Padding(
+              padding: const EdgeInsets.only(bottom: 2.0),
               child: RichText(
                 text: TextSpan(
+                  style: GoogleFonts.lato(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                   children: [
                     for (int i = 0; i < widget.word.length; i++)
                       TextSpan(
@@ -135,6 +158,31 @@ class _SpellingStepScreenState extends State<SpellingStepScreen> {
                           color: i == _currentIndex ? Colors.blue[900] : Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 36,
+                        ),
+                      ),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 2.0),
+              child: RichText(
+                text: TextSpan(
+                  style: GoogleFonts.msMadi(
+                    fontSize: 32,
+                    letterSpacing: 4,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  children: [
+                    for (int i = 0; i < widget.word.length; i++)
+                      TextSpan(
+                        text: widget.word[i],
+                        style: TextStyle(
+                          color: i == _currentIndex ? Colors.blue[900] : Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 50,
                         ),
                       ),
                   ],

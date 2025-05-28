@@ -72,7 +72,7 @@ class _LiterowanieScreenState extends State<LiterowanieScreen> {
                   const SizedBox(width: 24),
                   IconButton(
                     icon: const Icon(Icons.text_fields, size: 36),
-                    tooltip: 'Match case',
+                    tooltip: 'Duże i małe litery',
                     onPressed: () => _startSpelling(SpellingMode.matchCase),
                   ),
                 ],
