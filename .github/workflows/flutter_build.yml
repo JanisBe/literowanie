@@ -3,7 +3,7 @@ name: Flutter Build APK
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
     - name: 💻 Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.22.0'
+        flutter-version: '3.22.0'  # Podmień na swoją wersję Fluttera
 
     - name: 📦 Install dependencies
       run: flutter pub get
@@ -28,7 +28,7 @@ jobs:
       run: flutter build apk --release
 
     - name: 📤 Upload APK artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.1.3
       with:
         name: app-release.apk
         path: build/app/outputs/flutter-apk/app-release.apk
