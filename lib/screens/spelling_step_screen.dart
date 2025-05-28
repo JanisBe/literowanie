@@ -120,16 +120,40 @@ class _SpellingStepScreenState extends State<SpellingStepScreen> {
         title: const Text('Literowanie'),
       ),
       body: Center(
-        child: GestureDetector(
-          onTap: _nextLetter,
-          child: Container(
-            padding: const EdgeInsets.all(52),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: .1),
-              borderRadius: BorderRadius.circular(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 32.0),
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    for (int i = 0; i < widget.word.length; i++)
+                      TextSpan(
+                        text: widget.word[i],
+                        style: TextStyle(
+                          color: i == _currentIndex ? Colors.blue[900] : Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 36,
+                        ),
+                      ),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
-            child: letterWidget,
-          ),
+            GestureDetector(
+              onTap: _nextLetter,
+              child: Container(
+                padding: const EdgeInsets.all(52),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: .1),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: letterWidget,
+              ),
+            ),
+          ],
         ),
       ),
     );

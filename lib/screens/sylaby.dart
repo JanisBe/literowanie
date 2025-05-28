@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:async';
+import 'package:literki/screens/sylaby_screen.dart';
+
+
+enum SyllableMode { uppercase, lowercase, matchCase }
 
 class SylabyScreen extends StatefulWidget {
   const SylabyScreen({super.key});
@@ -12,12 +15,11 @@ class SylabyScreen extends StatefulWidget {
 class _SylabyScreenState extends State<SylabyScreen> {
   final TextEditingController _controller = TextEditingController();
 
-  Future<void> _onSpellCheck() async {
+  Future<void> _onSpellCheck(SyllableMode mode) async {
     final word = _controller.text.trim();
     if (word.isEmpty) return;
 
     try {
-      // 1. Pobierz ciastko hyphen
       final initResp = await http.get(Uri.parse('https://www.ushuaia.pl/hyphen'));
       final cookies = initResp.headers['set-cookie'];
       if (cookies == null) {
@@ -30,7 +32,6 @@ class _SylabyScreenState extends State<SylabyScreen> {
         return;
       }
 
-      // 2. Pobierz podział na sylaby
       final encodedWord = Uri.encodeComponent(word);
       final url = 'https://www.ushuaia.pl/hyphen/hyphenate.php?word=$encodedWord&lang=pl_PL';
       final resp = await http.get(
@@ -42,17 +43,15 @@ class _SylabyScreenState extends State<SylabyScreen> {
         return;
       }
 
-      // 3. Parsuj odpowiedź
       final parts = _splitHyphenated(resp.body);
       if (parts.isEmpty) {
         _showError('Nie udało się podzielić słowa.');
         return;
       }
 
-      // 4. Przejdź przez ekrany sylab
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => SyllableStepScreen(parts: parts),
+          builder: (context) => SyllableStepScreen(parts: parts, mode: mode),
         ),
       );
     } catch (e) {
@@ -71,7 +70,7 @@ class _SylabyScreenState extends State<SylabyScreen> {
     return replaced.split('|').map((e) => e.replaceAll(RegExp(r'<[^>]+>'), '')).toList();
   }
 
-void _showError(String msg) {
+  void _showError(String msg) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -117,72 +116,29 @@ void _showError(String msg) {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
-              IconButton(
-                icon: const Icon(Icons.spellcheck, size: 40),
-                color: Theme.of(context).colorScheme.primary,
-                onPressed: _onSpellCheck,
-                tooltip: 'Podziel na sylaby',
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_upward, size: 36),
+                    tooltip: 'DUŻE LITERY',
+                    onPressed: () => _onSpellCheck(SyllableMode.uppercase),
+                  ),
+                  const SizedBox(width: 24),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_downward, size: 36),
+                    tooltip: 'małe litery',
+                    onPressed: () => _onSpellCheck(SyllableMode.lowercase),
+                  ),
+                  const SizedBox(width: 24),
+                  IconButton(
+                    icon: const Icon(Icons.text_fields, size: 36),
+                    tooltip: 'Match case',
+                    onPressed: () => _onSpellCheck(SyllableMode.matchCase),
+                  ),
+                ],
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SyllableStepScreen extends StatefulWidget {
-  final List<String> parts;
-  const SyllableStepScreen({super.key, required this.parts});
-
-  @override
-  State<SyllableStepScreen> createState() => _SyllableStepScreenState();
-}
-
-class _SyllableStepScreenState extends State<SyllableStepScreen> {
-  int _current = 0;
-
-  void _next() {
-    setState(() {
-      _current++;
-      if (_current >= widget.parts.length) {
-        Navigator.of(context).pop();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_current >= widget.parts.length) {
-      return const SizedBox.shrink();
-    }
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.red, size: 32),
-            onPressed: () => Navigator.of(context).pop(),
-            tooltip: 'Zamknij',
-          ),
-        ],
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Sylaby'),
-      ),
-      body: Center(
-        child: GestureDetector(
-          onTap: _next,
-          child: Container(
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: .1),
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Text(
-              widget.parts[_current],
-              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
           ),
         ),
       ),

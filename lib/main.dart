@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'screens/sylaby.dart';
 import 'screens/spelling_step.dart';
@@ -30,12 +31,42 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Future<void> _confirmExit() async {
+    final shouldExit = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Zakończyć aplikację?'),
+        content: const Text('Czy na pewno chcesz zamknąć aplikację?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Nie'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Tak'),
+          ),
+        ],
+      ),
+    );
+    if (shouldExit == true) {
+      exit(0);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.red, size: 32),
+            tooltip: 'Zamknij aplikację',
+            onPressed: _confirmExit,
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -49,7 +80,19 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const LiterowanieScreen()),
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) => const LiterowanieScreen(),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      final offsetAnimation = Tween<Offset>(
+                        begin: const Offset(1.0, 0.0),
+                        end: Offset.zero,
+                      ).animate(animation);
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      );
+                    },
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -65,7 +108,19 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SylabyScreen()),
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) => const SylabyScreen(),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      final offsetAnimation = Tween<Offset>(
+                        begin: const Offset(1.0, 0.0),
+                        end: Offset.zero,
+                      ).animate(animation);
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      );
+                    },
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
